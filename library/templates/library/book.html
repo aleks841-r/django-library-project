@@ -1,0 +1,204 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'library/css/bootstrap.min.css' %}">
+    <title>Каталог книг библиотеки</title>
+</head>
+<body class="bg-light">
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <!-- Переход на главную страницу (ссылка) -->
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">📚 Цифровая библиотека (главная страница)</a>
+            <div class="navbar-nav ms-auto align-items-center">
+                <!-- Кнопка выхода -->
+                <form action="{% url 'logout' %}" method="post" class="d-inline m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm fw-bold">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент страницы -->
+    <div class="container">
+        <h1 class="fw-bold text-dark mb-4">Каталог книг</h1>
+        <!-- Кнопка перехода к списку авторов -->
+        <div class="d-flex justify-content-end align-items-center mb-4">
+            <a href="{% url 'author' %}" class="btn btn-outline-primary">К списку авторов</a>
+        </div>
+
+        <!-- Блок уведомлений -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                    <!-- Всплывающее сообщение -->
+                    <span class="me-2">{% if message.tags == 'success' %}✅{% elif message.tags == 'danger' or message.tags == 'error' %}❌{% elif message.tags == 'warning' %}⚠️{% elif message.tags == 'info' %}ℹ️{% endif %}</span>{{ message }}
+                    <!-- Кнопка закрытия всплывающего сообщения -->
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Модуль 1: Блок поиска и сортировки книг -->
+        <div class="card p-4 border-0 shadow-sm rounded-3 mb-5">
+            <form method="get" class="row g-3 align-items-end">
+                <!-- Поле текстового поиска (через Crispy Forms) -->
+                <div class="col-md-5">
+                    {{ form.query|as_crispy_field }}
+                </div>
+                <!-- Кнопка отправки формы -->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Найти</button>
+                </div>
+                 <!-- Блок переключения сортировки -->
+                <div class="col-md-4 text-md-end">
+                    <label class="form-label d-block small fw-bold text-muted text-start text-md-end mb-2">Сортировать по:</label>
+                    <div class="btn-group w-100" role="group">
+                        <a href="?query={{ search_query }}&sort=title"
+                           class="btn btn-outline-secondary btn-sm {% if current_sort == 'title' %}active{% endif %}">
+                            Названию
+                        </a>
+                        <a href="?query={{ search_query }}&sort=authors"
+                           class="btn btn-outline-secondary btn-sm {% if current_sort == 'authors' %}active{% endif %}">
+                            Автору
+                        </a>
+                        <!-- Кнопка сброса сортировки (только при активной сортировке) -->
+                        {% if current_sort %}
+                            <a href="?search={{ search_query }}" class="btn btn-outline-danger btn-sm flex-grow-0 px-3" title="Сбросить сортировку">❌</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Модуль 2: Карточка книги (издания) -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-4">
+            {% for item in books_with_forms %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 rounded-3">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark mb-3">{{ item.instance.title }}</h5>
+
+                            <!-- Поле: автор -->
+                            <p class="card-text mb-2 text-secondary">
+                                <strong>Автор(ы):</strong>
+                                {% for author in item.instance.authors.all %}
+                                    <span>{{ author.last_name }} {{ author.first_name }}</span>{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                    <span class="text-muted">Не указан</span>
+                                {% endfor %}
+                            </p>
+                            <!-- Поле: жанр -->
+                            <p class="card-text mb-2 text-secondary">
+                                <strong>Жанры:</strong> {{ item.instance.genres }}
+                            </p>
+                            <!-- Поле: ISBN -->
+                            <p class="card-text mb-2 text-secondary">
+                                <strong>ISBN:</strong> <small class="text-muted">{{ item.instance.isbn }}</small>
+                            </p>
+                            <!-- Поле: количество доступных экземпляров  -->
+                            <p class="card-text mb-4 text-secondary">
+                                <strong>Доступных экземпляров:</strong>
+                                <span class="badge bg-info text-dark font-weight-bold ms-1">{{ item.available_count }}</span>
+                            </p>
+
+                            <!-- Кнопки выбора действия -->
+                            <div class="mt-auto">
+                                {% if item.has_available_copies %}
+                                    <!-- Блок, выдачи книг (свободные экземпляры есть) -->
+                                    <div class="d-grid gap-2">
+                                        <span class="badge bg-success p-2 mb-2">Доступна</span>
+                                        {% if user.is_authenticated %}
+                                            <form method="post" action="{% url 'borrow_book' %}" class="m-0">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="book_id" value="{{ item.instance.id }}">
+                                                <button type="submit" class="btn btn-success btn-sm w-100 fw-bold py-2 shadow-sm">Взять книгу</button>
+                                            </form>
+                                        {% else %}
+                                            <p class="text-muted small text-center mt-2 mb-0">Войдите в систему, чтобы взять книгу</p>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <!-- Блок, бронирования книг (свободных экземпляров нет) -->
+                                    <div class="d-grid gap-2">
+                                        <span class="badge bg-danger p-2 mb-2">Нет в наличии</span>
+
+                                        {% if user.is_authenticated %}
+                                            <form method="post" action="{% url 'reserve_book' %}" class="m-0">
+                                                {% csrf_token %}
+                                                {{ item.reserve_form.book_id.as_hidden }}
+                                                <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold py-2 shadow-sm">Встать в очередь</button>
+                                            </form>
+                                        {% else %}
+                                            <p class="text-warning small text-center mt-2 mb-0">Войдите в систему, чтобы забронировать книгу</p>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center py-4 rounded-3 border-0 shadow-sm" role="alert">
+                        По Вашему запросу книг не найдено.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Модуль 3: Блок постраничной навигации -->
+        {% if books_with_forms.has_other_pages %}
+            <nav aria-label="Навигация по страницам" class="d-flex justify-content-center mt-5">
+                <ul class="pagination shadow-sm">
+
+                    <!-- Кнопка «Назад» -->
+                    {% if books_with_forms.has_previous %}
+                        <li class="page-item">
+                            <a class="page-item"><a class="page-link" href="?page={{ books_with_forms.previous_page_number }}">« Назад</a></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">« Назад</span></li>
+                    {% endif %}
+
+                    <!-- Цикл по номерам страниц -->
+                    {% for num in books_with_forms.paginator.page_range %}
+                        {% if books_with_forms.number == num %}
+                            <!-- Активная страница -->
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link bg-primary border-primary">{{ num }}</span>
+                            </li>
+                        {% elif num > books_with_forms.number|add:'-3' and num < books_with_forms.number|add:'3' %}
+                            <!-- Соседние страницы -->
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Кнопка «Вперед» -->
+                    {% if books_with_forms.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ books_with_forms.next_page_number }}">Вперед »</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Вперед »</span></li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        {% endif %}
+
+    </div> <!-- /container -->
+
+    <script src="{% static 'library/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
+

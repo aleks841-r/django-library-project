@@ -1,0 +1,68 @@
+[
+{
+  "model": "library.customuser",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$a9TmmuqwXNDqdzHGINMfL5$wOgjKKTi6SvIHQ1RiJ1DRana+QPOSTI7lVtEUkUStd4=",
+    "last_login": "2026-11-03T18:15:22.709Z",
+    "is_superuser": true,
+    "username": "admin",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-29T17:16:02Z",
+    "role": "librarian",
+    "last_name": "ADMIN",
+    "first_name": "SU",
+    "middle_name": null,
+    "phone": "+79110010101",
+    "document_number": "admin1",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "library.customuser",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$BL1qPXOYo7dgSHfTv5EArY$mDB8GT0wtj4LeTj45n8hkJ17BXVdlUetWRQqtpCZJYQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "librarian",
+    "email": "librarian@example.ru",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-11-03T17:03:43Z",
+    "role": "librarian",
+    "last_name": "Librarian",
+    "first_name": "Librarian",
+    "middle_name": null,
+    "phone": "+79110020202",
+    "document_number": "librarian1",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "library.customuser",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$HUvGMMdzW3d5vF4sUdSLuY$y4DRYfsVtIYH9J92kc6EJb4l7TowKpPE1xccNSb4h18=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "reader",
+    "email": "reader@example.ru",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-11-03T17:20:20Z",
+    "role": "reader",
+    "last_name": "Reader",
+    "first_name": "Reader",
+    "middle_name": null,
+    "phone": "+79110030303",
+    "document_number": "reader1",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

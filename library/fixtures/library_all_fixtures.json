@@ -1,0 +1,544 @@
+[
+{
+    "model": "library.customuser",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$a9TmmuqwXNDqdzHGINMfL5$wOgjKKTi6SvIHQ1RiJ1DRana+QPOSTI7lVtEUkUStd4=",
+        "last_login": "2026-11-09T19:25:23.317Z",
+        "is_superuser": true,
+        "username": "admin",
+        "email": "admin@example.ru",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-10-29T17:16:02Z",
+        "role": "director",
+        "last_name": "ADMIN",
+        "first_name": "SU",
+        "middle_name": null,
+        "phone": "+79110010101",
+        "document_number": "L2026U000001",
+        "force_password_change": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "library.customuser",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$BL1qPXOYo7dgSHfTv5EArY$mDB8GT0wtj4LeTj45n8hkJ17BXVdlUetWRQqtpCZJYQ=",
+        "last_login": "2026-11-09T17:23:34.006Z",
+        "is_superuser": false,
+        "username": "librarian",
+        "email": "librarian@example.ru",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-11-03T17:03:43Z",
+        "role": "librarian",
+        "last_name": "Librarian",
+        "first_name": "Librarian",
+        "middle_name": null,
+        "phone": "+79110020202",
+        "document_number": "L2026U000002",
+        "force_password_change": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "library.customuser",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$HUvGMMdzW3d5vF4sUdSLuY$y4DRYfsVtIYH9J92kc6EJb4l7TowKpPE1xccNSb4h18=",
+        "last_login": "2026-11-09T17:20:37.119Z",
+        "is_superuser": false,
+        "username": "reader",
+        "email": "reader@example.ru",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-11-03T17:20:20Z",
+        "role": "reader",
+        "last_name": "Reader",
+        "first_name": "Ivan",
+        "middle_name": null,
+        "phone": "+79110030303",
+        "document_number": "L2026U000003",
+        "force_password_change": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "library.customuser",
+    "pk": 6,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$gNi0SDuVUpz9GQCPO1Idri$wKIj4uJVhtwDIORJ+JxbGAghZAQYE4fGFVKuPsx+K+c=",
+        "last_login": "2026-11-09T17:23:12.796Z",
+        "is_superuser": false,
+        "username": "reader1",
+        "email": "reader_1@examole.ru",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-11-04T00:01:02Z",
+        "role": "reader",
+        "last_name": "Reader One",
+        "first_name": "Anna Maria",
+        "middle_name": null,
+        "phone": "+79110040404",
+        "document_number": "L2026U000004",
+        "force_password_change": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "library.customuser",
+    "pk": 7,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$ZsMooLdlCBLLuqInoXM0Ga$NB6qwiTnJIO0GO14y6/vjRfPIQReGHYYTH94Xqrh66k=",
+        "last_login": "2026-11-09T17:22:35.147Z",
+        "is_superuser": false,
+        "username": "reader2",
+        "email": "reader_2@example.ru",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-11-04T11:32:11Z",
+        "role": "reader",
+        "last_name": "Reader-Two",
+        "first_name": "Ivan-Peter",
+        "middle_name": null,
+        "phone": "+79110050505",
+        "document_number": "L2026U000005",
+        "force_password_change": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "library.customuser",
+    "pk": 9,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$je6ldGGepms4z83PYWE7vf$kj89N1fdINh3y0jC3+HnhawdeMUMlGtf7mKuO9m/w8I=",
+        "last_login": "2026-11-08T09:17:45.707Z",
+        "is_superuser": false,
+        "username": "reader10",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-11-07T16:59:05.946Z",
+        "role": "reader",
+        "last_name": "UserA",
+        "first_name": "UserB",
+        "middle_name": "UserC",
+        "phone": "+79129876543",
+        "document_number": "L20265AFC9C",
+        "force_password_change": false,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "library.author",
+    "pk": 1,
+    "fields": {
+        "last_name": "Пушкин",
+        "first_name": "Александр",
+        "middle_name": "Сергеевич",
+        "biography": "Великий русский поэт, драматург и прозаик."
+    }
+},
+{
+    "model": "library.author",
+    "pk": 2,
+    "fields": {
+        "last_name": "Беляев",
+        "first_name": "Александр",
+        "middle_name": "Романович",
+        "biography": "Русский писатель-фантаст, репортёр и адвокат, журналист. Один из основоположников советской научно-фантастической литературы."
+    }
+},
+{
+    "model": "library.author",
+    "pk": 3,
+    "fields": {
+        "last_name": "Верн",
+        "first_name": "Жюль Габриель",
+        "middle_name": "",
+        "biography": "Французский писатель, классик приключенческой литературы, один из основоположников жанра научной фантастики."
+    }
+},
+{
+    "model": "library.author",
+    "pk": 4,
+    "fields": {
+        "last_name": "Салтыков-Щедрин",
+        "first_name": "Михаил",
+        "middle_name": "Евграфович",
+        "biography": "Выдающийся русский писатель, один из наиболее известных сатириков XIX века, журналист, государственный деятель."
+    }
+},
+{
+    "model": "library.author",
+    "pk": 5,
+    "fields": {
+        "last_name": "Рива Паласио",
+        "first_name": "Висенте",
+        "middle_name": "",
+        "biography": ""
+    }
+},
+{
+    "model": "library.author",
+    "pk": 6,
+    "fields": {
+        "last_name": "Шекли",
+        "first_name": "Роберт",
+        "middle_name": "",
+        "biography": "Американский писатель-фантаст, мастер иронического юмористического рассказа."
+    }
+},
+{
+    "model": "library.author",
+    "pk": 7,
+    "fields": {
+        "last_name": "Дэвис",
+        "first_name": "Джерри",
+        "middle_name": null,
+        "biography": "Британский телесценарист, более известен своими вкладами в жанр научной фантастики."
+    }
+},
+{
+    "model": "library.author",
+    "pk": 8,
+    "fields": {
+        "last_name": "Педлер",
+        "first_name": "Кит",
+        "middle_name": null,
+        "biography": "Английский учёный-медик, писатель, сценарист, биолог. Доктор наук."
+    }
+},
+{
+    "model": "library.book",
+    "pk": 1,
+    "fields": {
+        "title": "Ариэль",
+        "genres": "научно-фантастический роман",
+        "isbn": "978-5-389-04925-1",
+        "authors": [
+            2
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 2,
+    "fields": {
+        "title": "Властелин мира",
+        "genres": "научно-фантастический роман",
+        "isbn": "978-5-389-04925-2",
+        "authors": [
+            2
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 3,
+    "fields": {
+        "title": "Руслан и Людмила",
+        "genres": "поэма",
+        "isbn": "978-5-389-04925-3",
+        "authors": [
+            1
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 4,
+    "fields": {
+        "title": "Где не ступала нога человека",
+        "genres": "сборник научно-фантастических рассказов",
+        "isbn": "978-5-389-04925-5",
+        "authors": [
+            6
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 5,
+    "fields": {
+        "title": "Пираты Мексиканского залива",
+        "genres": "исторический роман",
+        "isbn": "978-5-389-04925-6",
+        "authors": [
+            5
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 6,
+    "fields": {
+        "title": "Пятьсот миллионов бегумы",
+        "genres": "научно-фантастический роман",
+        "isbn": "978-5-389-04925-4",
+        "authors": [
+            3
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 7,
+    "fields": {
+        "title": "Мутант 59",
+        "genres": "научно-фантастический роман",
+        "isbn": "978-5-389-04925-7",
+        "authors": [
+            7,
+            8
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 8,
+    "fields": {
+        "title": "Бахчисарайский фонтан",
+        "genres": "поэма",
+        "isbn": "978-5-389-04925-8",
+        "authors": [
+            1
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.book",
+    "pk": 9,
+    "fields": {
+        "title": "Барышня-крестьянка",
+        "genres": "повесть",
+        "isbn": "978-5-389-04925-9",
+        "authors": [
+            1
+        ],
+        "reserved_by": []
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 1,
+    "fields": {
+        "book": 1,
+        "current_reader": 1,
+        "inventory_number": "INV1D8E9E",
+        "status": "loaned",
+        "issue_date": "2026-11-09",
+        "due_date": "2026-11-23"
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 2,
+    "fields": {
+        "book": 1,
+        "current_reader": null,
+        "inventory_number": "INV212CC2",
+        "status": "available",
+        "issue_date": "2026-11-09",
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 3,
+    "fields": {
+        "book": 2,
+        "current_reader": null,
+        "inventory_number": "INVD6B174",
+        "status": "available",
+        "issue_date": "2026-11-09",
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 4,
+    "fields": {
+        "book": 2,
+        "current_reader": null,
+        "inventory_number": "INV263A10",
+        "status": "available",
+        "issue_date": null,
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 5,
+    "fields": {
+        "book": 2,
+        "current_reader": null,
+        "inventory_number": "INVB56551",
+        "status": "available",
+        "issue_date": null,
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 6,
+    "fields": {
+        "book": 3,
+        "current_reader": null,
+        "inventory_number": "INV3487B8",
+        "status": "available",
+        "issue_date": "2026-11-08",
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 7,
+    "fields": {
+        "book": 4,
+        "current_reader": null,
+        "inventory_number": "INV549EB9",
+        "status": "available",
+        "issue_date": "2026-11-09",
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 8,
+    "fields": {
+        "book": 5,
+        "current_reader": null,
+        "inventory_number": "INV4C3A86",
+        "status": "available",
+        "issue_date": "2026-11-09",
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 9,
+    "fields": {
+        "book": 6,
+        "current_reader": null,
+        "inventory_number": "INVFF1FED",
+        "status": "available",
+        "issue_date": "2026-11-08",
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 10,
+    "fields": {
+        "book": 6,
+        "current_reader": null,
+        "inventory_number": "INV74B525",
+        "status": "available",
+        "issue_date": null,
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 11,
+    "fields": {
+        "book": 7,
+        "current_reader": null,
+        "inventory_number": "INV46466D",
+        "status": "available",
+        "issue_date": "2026-11-09",
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 12,
+    "fields": {
+        "book": 8,
+        "current_reader": null,
+        "inventory_number": "INV052D7A",
+        "status": "available",
+        "issue_date": null,
+        "due_date": null
+    }
+},
+{
+    "model": "library.physicalcopy",
+    "pk": 13,
+    "fields": {
+        "book": 9,
+        "current_reader": 1,
+        "inventory_number": "INV275725",
+        "status": "loaned",
+        "issue_date": "2026-11-10",
+        "due_date": "2026-11-24"
+    }
+},
+{
+    "model": "library.borrowlog",
+    "pk": 1,
+    "fields": {
+        "reader": 1,
+        "physical_copy": 3,
+        "issue_date": "2026-11-09",
+        "return_date": "2026-11-09"
+    }
+},
+{
+    "model": "library.borrowlog",
+    "pk": 2,
+    "fields": {
+        "reader": 1,
+        "physical_copy": 1,
+        "issue_date": "2026-11-09",
+        "return_date": null
+    }
+},
+{
+    "model": "library.borrowlog",
+    "pk": 3,
+    "fields": {
+        "reader": 1,
+        "physical_copy": 8,
+        "issue_date": "2026-11-09",
+        "return_date": "2026-11-09"
+    }
+},
+{
+    "model": "library.borrowlog",
+    "pk": 4,
+    "fields": {
+        "reader": 1,
+        "physical_copy": 13,
+        "issue_date": "2026-11-09",
+        "return_date": "2026-11-09"
+    }
+},
+{
+    "model": "library.borrowlog",
+    "pk": 5,
+    "fields": {
+        "reader": 1,
+        "physical_copy": 13,
+        "issue_date": "2026-11-10",
+        "return_date": null
+    }
+}
+]

@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'library/css/bootstrap.min.css' %}">
+    <title>Цифровая библиотека</title>
+</head>
+<body class="bg-light">
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-5 py-3">
+        <div class="container d-flex flex-column align-items-stretch gap-2">
+
+            <!-- Строка 1: Название библиотеки и имя авторизованного пользователя -->
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <!-- Переход на главную страницу (ссылка) -->
+                <a class="navbar-brand fw-bold m-0" href="{% url 'index' %}">📚 Цифровая библиотека</a>
+                <!-- Имя пользователя (только для авторизованных) -->
+                {% if user.is_authenticated %}
+                    <span class="text-white mb-0">
+                        Вы вошли как: <strong>{{ user.first_name|default:user.username }}</strong>
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Строка 2: Кнопки навигации и управления -->
+            <div class="w-100">
+                <!-- Кнопки навигации авторизованных пользователей -->
+                {% if user.is_authenticated %}
+                    <div class="d-flex flex-row flex-wrap align-items-center justify-content-end gap-2 border-top border-white-50 pt-2">
+                        <!-- Кнопка доступа к странице авторизированного пользователя -->
+                        <a class="btn btn-light btn-sm fw-bold text-primary" href="{% url 'my_book' %}">Выбранные мной книги</a>
+                        <!-- Кнопки доступа к административным панелям -->
+                        {% if user.is_staff %}
+                            <a class="btn btn-warning btn-sm fw-bold text-dark shadow-sm" href="{% url 'librarian' %}">Панель библиотекаря</a>
+                            <a class="btn btn-warning btn-sm fw-bold text-dark shadow-sm" href="{% url 'admin:index' %}" target="_blank">Панель управления</a>
+                        {% endif %}
+                        <!-- Кнопка выхода -->
+                        <form action="{% url 'logout' %}" method="post" class="d-inline m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-light btn-sm fw-bold">Выйти</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <!-- Кнопки входа/регистрации -->
+                    <div class="d-flex flex-row align-items-center justify-content-end gap-2 border-top border-white-50 pt-2">
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Войти</a>
+                        <a class="btn btn-light btn-sm fw-bold text-primary" href="{% url 'register_reader' %}">Регистрация читателя</a>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Основной контент страницы -->
+    <div class="container">
+
+        <!-- Приветственный баннер -->
+        <div class="p-5 mb-5 bg-white rounded-3 shadow-sm border">
+            <div class="container-fluid py-2">
+                <h1 class="display-5 fw-bold text-dark">Добро пожаловать в библиотеку с системой аренды книг!</h1>
+                <p class="col-12 fs-5 text-muted mt-3" style="text-align: justify;">
+                    Данный сервис предоставляет читателям возможность находить нужную литературу, проверять её наличие на полках, брать книги на руки онлайн или вставать в электронную очередь в случае отсутствия физических экземпляров.
+                </p>
+            </div>
+        </div>
+
+        <!-- Модули проекта -->
+        <div class="row g-4 mb-5">
+
+            <!-- Модуль Книг -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h3 class="card-title fw-bold text-primary mb-3">📖 Каталог книг</h3>
+                        <p class="card-text text-muted flex-grow-1">
+                            Поиск книг по названию или автору. Просмотр количества доступных экземпляров, оформление выдачи книг на руки и бронирование (электронная очередь).
+                        </p>
+                        <!-- Кнопка перехода на страницу Книги -->
+                        <a href="{% url 'book' %}" class="btn btn-primary mt-3 w-100 py-2 fw-bold">Открыть каталог книг</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Модуль Авторов -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h3 class="card-title fw-bold text-primary mb-3">✍️ Список авторов</h3>
+                        <p class="card-text text-muted flex-grow-1">
+                            Просмотр списка авторов с возможностью поиска и сортировки по имени или фамилии. Быстрый переход к книгам конкретного автора, хранящимся в фонде.
+                        </p>
+                        <!-- Кнопка перехода на страницу Авторы -->
+                        <a href="{% url 'author' %}" class="btn btn-primary mt-3 w-100 py-2 fw-bold">Перейти к списку авторов</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div> <!-- /container -->
+
+</body>
+</html>

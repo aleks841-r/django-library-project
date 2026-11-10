@@ -1,0 +1,158 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'library/css/bootstrap.min.css' %}">
+    <title>Список авторов библиотеки</title>
+</head>
+<body class="bg-light">
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <!-- Переход на главную страницу (ссылка) -->
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">📚 Цифровая библиотека (главная страница)</a>
+            <div class="navbar-nav ms-auto align-items-center">
+                <!-- Кнопка выхода -->
+                <form action="{% url 'logout' %}" method="post" class="d-inline m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm fw-bold">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент страницы -->
+    <div class="container">
+        <h1 class="fw-bold text-dark mb-4">Список авторов</h1>
+        <!-- Кнопка перехода в каталог книг -->
+        <div class="d-flex justify-content-end align-items-center mb-4">
+            <a href="{% url 'book' %}" class="btn btn-outline-primary">В каталог книг</a>
+        </div>
+
+        <!-- Модуль 1: Блок поиска и сортировки авторов -->
+        <div class="card p-4 border-0 shadow-sm rounded-3 mb-5">
+            <form method="get" class="row g-3 align-items-end">
+                {% if current_sort %}
+                    <input type="hidden" name="sort" value="{{ current_sort }}">
+                {% endif %}
+                <!-- Поле текстового поиска (через Crispy Forms) -->
+                <div class="col-md-5">
+                    {{ form.search|as_crispy_field }}
+                </div>
+                <!-- Кнопка отправки формы -->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Найти</button>
+                </div>
+                <!-- Блок переключения сортировки -->
+                <div class="col-md-4 text-md-end">
+                    <label class="form-label d-block small fw-bold text-muted text-start text-md-end mb-2">Сортировать по:</label>
+                    <div class="btn-group w-100" role="group">
+                        <a href="?search={{ search_query }}&sort=last_name"
+                        class="btn btn-outline-secondary btn-sm {% if current_sort == 'last_name' %}active{% endif %}">
+                            Фамилии
+                        </a>
+                        <a href="?search={{ search_query }}&sort=first_name"
+                        class="btn btn-outline-secondary btn-sm {% if current_sort == 'first_name' %}active{% endif %}">
+                            Имени
+                        </a>
+                        <!-- Кнопка сброса сортировки (только при активной сортировке) -->
+                        {% if current_sort %}
+                            <a href="?search={{ search_query }}" class="btn btn-outline-danger btn-sm flex-grow-0 px-3" title="Сбросить сортировку">❌</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Модуль 2: Карточка автора -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+            {% for author in authors %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 rounded-3">
+                        <div class="card-body p-4 d-flex flex-column">
+
+                            <!-- Поле имя и фамилия -->
+                            <h5 class="card-title fw-bold text-dark mb-3">
+                                👤 {{ author.last_name }} {{ author.first_name }}
+                            </h5>
+                            <!-- Блок биографии -->
+                            <p class="card-text text-muted small mb-3" style="text-align: justify;">
+                                {{ author.biography|default:"Биография автора на данный момент не заполнена." }}
+                            </p>
+                            <!-- Блок ссылок на книги в фонде (если есть) -->
+                            <div class="border-top pt-3">
+                                <h6 class="fw-bold mb-2 small text-uppercase text-secondary">Книги в фонде:</h6>
+                                <ul class="list-group list-group-flush">
+                                    {% for book in author.books.all %}
+                                        <li class="list-group-item p-1 bg-transparent">
+                                            <a href="{% url 'book' %}?query={{ book.title|urlencode }}" class="text-decoration-none text-primary small">
+                                                📖 {{ book.title }}
+                                            </a>
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item p-1 bg-transparent text-warning small">💡 Книг пока нет.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center py-4 rounded-3 border-0 shadow-sm" role="alert">
+                        Авторы не найдены.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Модуль 3: Блок постраничной навигации -->
+        {% if authors.has_other_pages %}
+            <nav aria-label="Навигация по страницам" class="d-flex justify-content-center mt-5">
+                <ul class="pagination shadow-sm">
+
+                    <!-- Кнопка «Назад» -->
+                    {% if authors.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ authors.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">« Назад</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">« Назад</span></li>
+                    {% endif %}
+
+                    <!-- Цикл по номерам страниц -->
+                    {% for num in authors.paginator.page_range %}
+                        {% if authors.number == num %}
+                            <!-- Активная страница -->
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link bg-primary border-primary">{{ num }}</span>
+                            </li>
+                        {% elif num > authors.number|add:'-3' and num < authors.number|add:'3' %}
+                            <!-- Соседние страницы -->
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Кнопка «Вперед» -->
+                    {% if authors.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ authors.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">Вперед »</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Вперед »</span></li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        {% endif %}
+
+    </div> <!-- /container -->
+</body>
+</html>

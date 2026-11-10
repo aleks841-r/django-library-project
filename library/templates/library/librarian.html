@@ -1,0 +1,324 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'library/css/bootstrap.min.css' %}">
+    <title>Панель управления библиотекаря</title>
+</head>
+<body class="bg-light">
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <!-- Переход на главную страницу (ссылка) -->
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">📚 Цифровая библиотека (главная страница)</a>
+            <div class="navbar-nav ms-auto align-items-center">
+                <!-- Кнопка выхода -->
+                <form action="{% url 'logout' %}" method="post" class="d-inline m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm fw-bold">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент страницы -->
+    <div class="container my-5">
+
+        <!-- Блок уведомлений -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                    <!-- Всплывающее сообщение -->
+                    <span class="me-2">{% if message.tags == 'success' %}✅{% elif message.tags == 'danger' or message.tags == 'error' %}❌{% elif message.tags == 'warning' %}⚠️{% elif message.tags == 'info' %}ℹ️{% endif %}</span>{{ message }}
+                    <!-- Кнопка закрытия всплывающего сообщения -->
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Приветственный баннер -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="fw-bold text-dark mb-1">📚 Панель управления библиотекаря</h1>
+                <p class="text-muted">Контроль выданных книг и очередей бронирования.</p>
+            </div>
+        </div>
+
+        <!-- Модуль 1: Книги на руках -->
+        <div class="card shadow-sm border-0 mb-5">
+            <div class="card-header bg-white p-4 border-0">
+                <h3 class="fw-bold text-success mb-0">📗 Книги на руках у читателей</h3>
+                <small class="text-muted">Список выданных экземпляров.</small>
+            </div>
+            <!-- Таблица 1: Книги на руках -->
+            <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                {% if borrowed_copies %}
+                    <div class="table-responsive" style="max-height: inherit;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-secondary">
+                                <!-- Названия столбцов -->
+                                <tr style="position: sticky; top: 0; z-index: 10;">
+                                    <th class="ps-4 bg-light" style="position: sticky; top: 0; z-index: 10;">Инв. №</th>
+                                    <th class="bg-light" style="position: sticky; top: 0; z-index: 10;">Название книги / Авторы</th>
+                                    <th class="bg-light" style="position: sticky; top: 0; z-index: 10;">Читатель (Логин)</th>
+                                    <th class="bg-light" style="position: sticky; top: 0; z-index: 10;">Дата выдачи</th>
+                                    <th class="bg-light" style="position: sticky; top: 0; z-index: 10;">Дата возврата</th>
+                                    <th class="text-end pe-4 bg-light" style="position: sticky; top: 0; z-index: 10;">Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for copy in borrowed_copies %}
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-secondary">{{ copy.inventory_number }}</td>
+                                        <td>
+                                            <span class="fw-bold text-dark d-block mb-1">{{ copy.book.title }}</span>
+                                            <small class="text-muted">
+                                                {% for author in copy.book.authors.all %}
+                                                    {{ author.last_name }} {{ author.first_name }}{% if not forloop.last %}, {% endif %}
+                                                {% empty %}Автор не указан{% endfor %}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="d-block fw-bold text-dark">{{ copy.current_reader.last_name }} {{ copy.current_reader.first_name }}</span>
+                                            <small class="text-muted">@{{ copy.current_reader.username }}</small>
+                                        </td>
+                                        <td>
+                                            {% if copy.issue_date %}
+                                                <span class="badge bg-light text-dark border p-2 fw-semibold">{{ copy.issue_date|date:"d.m.Y" }}</span>
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if copy.due_date %}
+                                                <span class="badge bg-light text-dark border p-2 fw-semibold">{{ copy.due_date|date:"d.m.Y" }}</span>
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <!-- Кнопка: вернуть книгу на полку -->
+                                        <td class="text-end pe-4">
+                                            <form method="post" action="{% url 'return_book' copy.id %}" class="d-inline m-0">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-success btn-sm fw-bold px-3 py-2 shadow-sm">
+                                                    Вернуть на полку
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center p-5 text-muted">
+                        <span class="display-4 mb-2 d-block">💡</span>
+                        <h5>На руках у читателей сейчас нет ни одной книги.</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Модуль 2: Очереди бронирования -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white p-4 border-0">
+                <h3 class="fw-bold text-warning mb-0">📙 Очереди бронирования книг</h3>
+                <small class="text-muted">Управление очередями бронирования (выдача книги первому читателю в очереди, удаление читателя из очереди).</small>
+            </div>
+            <!-- Таблица 2: Очереди бронирования -->
+            <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                {% if reserved_books %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-secondary position-sticky top-0" style="z-index: 10;">
+                                <!-- Названия столбцов -->
+                                <tr>
+                                    <th class="ps-4 bg-light">ISBN</th>
+                                    <th class="bg-light">Название книги / Авторы</th>
+                                    <th class="bg-light">Очередь бронирования</th>
+                                    <th class="text-end pe-4 bg-light">Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for book in reserved_books %}
+                                    <tr>
+                                        <td class="ps-4 text-muted small fw-mono">{{ book.isbn }}</td>
+                                        <td>
+                                            <span class="fw-bold text-dark d-block mb-1">{{ book.title }}</span>
+                                            <small class="text-muted">
+                                                {% for author in book.authors.all %}
+                                                    {{ author.last_name }} {{ author.first_name }}{% if not forloop.last %}, {% endif %}
+                                                {% empty %}Автор не указан{% endfor %}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <!-- Кнопка: удалить читателя из очереди -->
+                                            <div class="d-flex flex-wrap gap-2">
+                                                {% for reader in book.reserved_by.all %}
+                                                    <div class="btn-group btn-group-sm border border-warning-subtle rounded shadow-sm" role="group">
+                                                        <span class="btn btn-warning text-dark fw-semibold bg-opacity-25 bg-warning border-0" style="pointer-events: none;">
+                                                            👤 №{{ forloop.counter }} {{ reader.last_name }} {{ reader.first_name|slice:":1" }}.
+                                                        </span>
+                                                        <form method="post" action="{% url 'remove_reserve' book.id reader.id %}" class="d-inline m-0">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-warning text-danger border-0 border-start border-warning-subtle bg-opacity-10 bg-warning" title="Удалить из очереди">
+                                                                &times;
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <!-- Кнопка: выдать книгу первому читателю в очереди -->
+                                            <form method="post" action="{% url 'assign_reserve' book.id %}" class="d-inline m-0">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-warning btn-sm fw-bold text-dark px-3 py-2 shadow-sm">
+                                                    Выдать книгу
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center p-5 text-muted">
+                        <span class="display-4 mb-2 d-block">💡</span>
+                        <h5>Очередей бронирования книг нет.</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Модуль 3: Библиотечный фонд -->
+        <div class="card shadow-sm border-0 mt-5">
+            <div class="card-header bg-white p-4 border-0 pb-2">
+                <h3 class="fw-bold text-primary mb-1">📘 Библиотечный фонд</h3>
+                <p class="text-muted small mb-3">Управление статусом экземпляров.</p>
+                <!-- Строка поиска и меню сортировки -->
+                <form method="get" action="{% url 'librarian' %}" class="row g-2 align-items-center bg-light p-3 rounded border border-light-subtle">
+                    <div class="col-md-6">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white text-muted">🔎</span>
+                            <input type="text" name="copy_search" class="form-control" placeholder="Поиск по инвентарному №, ISBN или названию книги..." value="{{ copy_search }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="copy_status" class="form-select form-select-sm">
+                            <option value="">— Все статусы —</option>
+                            <option value="available" {% if copy_status == 'available' %}selected{% endif %}>На полке (Доступна)</option>
+                            <option value="loaned" {% if copy_status == 'loaned' %}selected{% endif %}>Выдана читателю</option>
+                            <option value="restoration" {% if copy_status == 'restoration' %}selected{% endif %}>На реставрации</option>
+                            <option value="archived" {% if copy_status == 'archived' %}selected{% endif %}>Списана</option>
+                        </select>
+                    </div>
+                    <!-- Кнопки поиска -->
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm fw-bold w-100">Найти</button>
+                        {% if copy_search or copy_status %}
+                            <a href="{% url 'librarian' %}" class="btn btn-outline-secondary btn-sm fw-bold text-nowrap">Сбросить</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+            <!-- Таблица 3: Библиотечный фонд -->
+            <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                {% if all_physical_copies %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-secondary position-sticky top-0" style="z-index: 10;">
+                                <!-- Названия столбцов -->
+                                <tr>
+                                    <th class="ps-4 bg-light">Инв. №</th>
+                                    <th class="bg-light">Название книги / Авторы / ISBN</th>
+                                    <th class="bg-light">Текущий статус</th>
+                                    <th class="bg-light">Где находится</th>
+                                    <th class="text-end pe-4 bg-light">Сменить статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for copy in all_physical_copies %}
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-secondary">{{ copy.inventory_number }}</td>
+                                        <td>
+                                            <span class="fw-bold text-dark d-block mb-0">{{ copy.book.title }}</span>
+                                            <small class="text-muted d-block mb-1">
+                                                {% for author in copy.book.authors.all %}
+                                                    {{ author.last_name }} {{ author.first_name }}{% if not forloop.last %}, {% endif %}
+                                                {% empty %}Автор не указан{% endfor %}
+                                            </small>
+                                            <span class="badge bg-light text-secondary border fw-normal p-1 font-weight-normal small" style="font-size: 0.75rem;">ISBN: {{ copy.book.isbn }}</span>
+                                        </td>
+                                        <td>
+                                            {% if copy.status == 'available' %}
+                                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fw-semibold">На полке (Доступна)</span>
+                                            {% elif copy.status == 'loaned' %}
+                                                <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-2 py-1 fw-semibold">Выдана читателю</span>
+                                            {% elif copy.status == 'restoration' %}
+                                                <span class="badge bg-info bg-opacity-10 text-info border border-info-subtle px-2 py-1 fw-semibold">🛠 На реставрации</span>
+                                            {% elif copy.status == 'archived' %}
+                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-2 py-1 fw-semibold">❌ Списана</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary px-2 py-1">{{ copy.get_status_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if copy.status == 'loaned' and copy.current_reader %}
+                                                <small class="text-muted">У читателя: </small><span class="fw-semibold text-dark">@{{ copy.current_reader.username }}</span>
+                                            {% elif copy.status == 'restoration' %}
+                                                <span class="text-info small fw-semibold">В мастерской</span>
+                                            {% elif copy.status == 'archived' %}
+                                                <span class="text-danger small fw-semibold">Вне фонда (Утилизирована)</span>
+                                            {% else %}
+                                                <span class="text-primary small fw-semibold">В основном зале</span>
+                                            {% endif %}
+                                        </td>
+                                        <!-- Кнопки изменения статуса экземпляра -->
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group btn-group-sm shadow-sm" role="group">
+                                                {% if copy.status != 'available' %}
+                                                    <form method="post" action="{% url 'manage_copy_status' copy.id %}" class="d-inline m-0">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="action" value="to_available">
+                                                        <button type="submit" class="btn btn-outline-primary fw-bold" title="Сделать доступной">↩️ На полку</button>
+                                                    </form>
+                                                {% endif %}
+                                                {% if copy.status != 'restoration' %}
+                                                    <form method="post" action="{% url 'manage_copy_status' copy.id %}" class="d-inline m-0">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="action" value="to_restoration">
+                                                        <button type="submit" class="btn btn-outline-info fw-bold" title="Отправить в мастерскую">🛠 Ремонт</button>
+                                                    </form>
+                                                {% endif %}
+                                                {% if copy.status != 'archived' %}
+                                                    <form method="post" action="{% url 'manage_copy_status' copy.id %}" class="d-inline m-0">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="action" value="to_archive">
+                                                        <button type="submit" class="btn btn-outline-danger fw-bold" title="Списать книгу">❌ Списать</button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center p-5 text-muted">
+                        <h5>Экземпляры с такими критериями поиска не найдены.</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div> <!-- /container -->
+
+    <script src="{% static 'library/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему</title>
+    <link rel="stylesheet" href="{% static 'library/css/bootstrap.min.css' %}">
+    <style>
+        body, html { height: 100%; }
+        .wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-primary text-white text-center py-4 rounded-top">
+                        <h4 class="mb-0 fw-bold">Вход в библиотеку</h4>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            {{ form|crispy }}
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary w-100 btn-lg shadow-sm fw-bold">Войти</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-footer bg-white text-center py-3 rounded-bottom border-top-0">
+                        <span class="text-muted small">Нет аккаунта? </span>
+                        <a href="{% url 'register_reader' %}" class="text-decoration-none small">Зарегистрироваться</a>
+                        <br>
+                        <a href="{% url 'index' %}" class="text-decoration-none text-muted small d-block mt-2">← На главную</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

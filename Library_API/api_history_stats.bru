@@ -1,0 +1,21 @@
+meta {
+  name: api_history_stats
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://127.0.0.1:8000/api/librarian/stats/history/
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk0MjY5MTkxLCJpYXQiOjE3OTQyNjgyOTIsImp0aSI6IjMwMWRhY2FmMTVkZTQ4YzFhOTkwZDA2Y2IwYTBlNWU4IiwidXNlcl9pZCI6IjQifQ.7MJVVjAuNuOffpQEa385IlNkFY7OTfms2-V7Fu8uV9Q
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

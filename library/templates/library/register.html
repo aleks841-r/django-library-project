@@ -1,0 +1,65 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация нового читателя</title>
+
+    <!-- Подключение вашего локального файла Bootstrap 5.3.x -->
+    <link rel="stylesheet" href="{% static 'library/css/bootstrap.min.css' %}">
+
+    <style>
+        body, html { height: 100%; }
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+
+                <!-- Красивая карточка формы в стиле Bootstrap 5 -->
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-primary text-white text-center py-4 rounded-top">
+                        <h4 class="mb-0 fw-bold">Регистрация читателя</h4>
+                        <small class="text-white-50">Заполните данные для создания билета</small>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+
+                            <!-- Тег отрендерит поля с правильными классами .form-control под BS5 -->
+                            {{ form|crispy }}
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary w-100 btn-lg shadow-sm fw-bold">
+                                    Создать аккаунт
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-footer bg-white text-center py-3 rounded-bottom border-top-0">
+                        <a href="{% url 'index' %}" class="text-decoration-none text-muted small">
+                            ← Вернуться на главную страницу
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

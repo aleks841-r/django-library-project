@@ -1,0 +1,17 @@
+meta {
+  name: api_author_list
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://127.0.0.1:8000/api/authors/
+  body: none
+  auth: none
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

@@ -1,0 +1,18 @@
+# Секреты и пароли
+.env
+
+# Виртуальное окружение Python
+.venv/
+venv/
+env/
+
+# Кэш компиляции Python
+__pycache__/
+*.pyc
+
+# Настройки IDE PyCharm
+.idea/
+
+# Токены и сессии Bruno API
+.bruno/**/collection.bru.user
+.bruno/environments/*-local.json

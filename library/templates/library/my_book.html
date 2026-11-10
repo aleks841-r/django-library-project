@@ -1,0 +1,188 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'library/css/bootstrap.min.css' %}">
+    <title>Выбранные мной книги</title>
+</head>
+<body class="bg-light">
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-5 py-3">
+        <div class="container d-flex flex-column align-items-stretch gap-2">
+            <!-- Строка 1 -->
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <!-- Переход на главную страницу (ссылка) -->
+                <a class="navbar-brand fw-bold m-0" href="{% url 'index' %}">📚 Цифровая библиотека (домашная страница)</a>
+                <div class="d-flex align-items-center gap-3">
+                    {% if user.is_authenticated %}
+                        <span class="text-white mb-0">
+                            Вы вошли как: <strong>{{ user.first_name|default:user.username }}</strong>
+                        </span>
+                        <!-- Кнопка выхода -->
+                        <form action="{% url 'logout' %}" method="post" class="d-inline m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-light btn-sm fw-bold">Выйти</button>
+                        </form>
+                    {% else %}
+                        <!-- Кнопки авторизации/регистрации -->
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Войти</a>
+                        <a class="btn btn-light btn-sm fw-bold text-primary" href="{% url 'register_reader' %}">Регистрация читателя</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Строка 2 -->
+            <div class="w-100 border-top border-white-20 pt-2 mt-1">
+                <div class="d-flex flex-row flex-wrap align-items-center justify-content-end gap-2">
+                    <!-- Переход к списку авторов (ссылка)-->
+                    <a class="btn btn-light btn-sm fw-bold text-primary shadow-sm" href="{% url 'author' %}">✍️ К списку авторов</a>
+                    <!-- Переход в каталог книг (ссылка) -->
+                    <a class="btn btn-light btn-sm fw-bold text-primary shadow-sm" href="{% url 'book' %}">📖 В каталог книг</a>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Основной контент страницы -->
+    <div class="container my-5">
+        <!-- Заголовок страницы -->
+        <div class="d-flex align-items-center justify-content-between mb-5">
+            <div>
+                <h1 class="fw-bold text-primary mb-2">📚 Выбранные мной книги</h1>
+                <p class="text-muted mb-0">Список книг, которые мной зарезервированы или уже взяты в библиотеке.</p>
+            </div>
+        </div>
+
+        {% if b_copies or reserved_books %}
+
+            <!-- Модуль 1: Выданные мне книги -->
+            {% if b_copies %}
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-header bg-white py-3">
+                        <h3 class="fw-bold text-dark mb-0">📗 Выданные мне книги</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light text-secondary">
+                                    <!-- Названия столбцов -->
+                                    <tr>
+                                        <th scope="col" class="py-3 ps-4" style="width: 35%;">Название книги</th>
+                                        <th scope="col" class="py-3" style="width: 25%;">Автор(ы)</th>
+                                        <th scope="col" class="py-3 text-center" style="width: 15%;">Инвентарный №</th>
+                                        <th scope="col" class="py-3 text-center" style="width: 13%;">Дата выдачи</th>
+                                        <th scope="col" class="py-3 text-center" style="width: 13%;">Дата возврата</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for copy in b_copies %}
+                                        <tr>
+                                            <!-- Поле: название книги -->
+                                            <td class="fw-bold text-dark py-3 ps-4">
+                                                {{ copy.book.title }}
+                                            </td>
+                                            <!-- Поле: автор(ы) -->
+                                            <td class="text-secondary">
+                                                {% if copy.book.authors.all %}
+                                                    {{ copy.book.authors.all|join:", " }}
+                                                {% else %}
+                                                    <span class="text-muted small italic">Автор не указан</span>
+                                                {% endif %}
+                                            </td>
+                                            <!-- Поле: инвентарный номер -->
+                                            <td class="text-center text-muted small">
+                                                {{ copy.inventory_number }}
+                                            </td>
+                                            <!-- Дата выдачи -->
+                                            <td class="text-center font-weight-bold">
+                                                {% if copy.issue_date %}
+                                                    <span class="text-dark">{{ copy.issue_date|date:"d.m.Y" }}</span>
+                                                {% else %}
+                                                    <span class="text-muted small">—</span>
+                                                {% endif %}
+                                            </td>
+                                            <!-- Дата возврата -->
+                                            <td class="text-center font-weight-bold">
+                                                {% if copy.due_date %}
+                                                    <span class="text-dark">{{ copy.due_date|date:"d.m.Y" }}</span>
+                                                {% else %}
+                                                    <span class="text-muted small">—</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Модуль 2: Забронированные мной книги -->
+            {% if reserved_books %}
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-header bg-white py-3">
+                        <h3 class="fw-bold text-dark mb-0">📙 Забронированные мной книги</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light text-secondary">
+                                    <!-- Названия столбцов -->
+                                    <tr>
+                                        <th scope="col" class="py-3 ps-4">Название книги</th>
+                                        <th scope="col" class="py-3">Автор(ы)</th>
+                                        <th scope="col" class="py-3 text-end pe-4">Статус</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for book in reserved_books %}
+                                        <tr>
+                                            <!-- Поле: название книги -->
+                                            <td class="fw-bold text-dark py-3 ps-4">
+                                                {{ book.title }}
+                                            </td>
+                                            <!-- Поле: автор(ы) -->
+                                            <td class="text-muted py-3">
+                                                {% if book.authors.all %}
+                                                    {{ book.authors.all|join:", " }}
+                                                {% else %}
+                                                    Автор не указан
+                                                {% endif %}
+                                            </td>
+                                            <!-- Поле: статус -->
+                                            <td class="text-end pe-4 py-3">
+                                                <span class="badge bg-warning text-dark px-3 py-2 fw-semibold shadow-sm">
+                                                    Забронировано
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% else %}
+            <!-- Модуль 3: Книги еще не выбраны пользователем (читателем) -->
+            <div class="card shadow-sm border-0 text-center p-5 my-5">
+                <div class="card-body">
+                    <div class="display-1 text-muted mb-3">📚</div>
+                    <h3 class="fw-bold text-dark">У вас пока нет выбранных книг</h3>
+                    <p class="text-muted mx-auto" style="max-width: 450px;">
+                        Вы не резервировали книги и не брали их на дом в последнее время.
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div> <!-- /container -->
+
+</body>
+</html>

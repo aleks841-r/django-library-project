@@ -1,0 +1,21 @@
+meta {
+  name: api_my_books
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://127.0.0.1:8000/api/my-books/
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk0MjYyNTk5LCJpYXQiOjE3OTQyNjE2OTksImp0aSI6IjczYThlOTViNzI0ZDRmOTdhZThkNDAzOTQ0YmVmY2VhIiwidXNlcl9pZCI6IjUifQ.w8xxTcMK7yK9-axTUXrZj0qsjeTnTeAiGVaaLlEpzq4
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}
